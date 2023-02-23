@@ -2,12 +2,14 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:watch_animation_flutter/watch.model.dart';
 import 'package:watch_animation_flutter/widgets/wood_3d_element.widget.dart';
 
 import 'trapeze_painter.widget.dart';
 
 class BoxFaceWidget extends StatefulWidget {
-  const BoxFaceWidget({super.key});
+  final Watch watch;
+  const BoxFaceWidget({super.key, required this.watch});
 
   @override
   State<BoxFaceWidget> createState() => _BoxFaceWidgetState();
@@ -62,38 +64,19 @@ class _BoxFaceWidgetState extends State<BoxFaceWidget> with TickerProviderStateM
     double depth = 10;
     // top translation related to depth
     double topTranslation = depth * 2;
-    return Column(
-      children: [
-        Spacer(),
-        ElevatedButton(
-            onPressed: () {
-              _boxController.forward();
-            },
-            child: Text("Start")),
-        // Slider(
-        //     value: _sliderValue,
-        //     onChanged: ((value) {
-        //       setState(() {
-        //         _sliderValue = value;
-        //         _rotation = value < .936 ? value * pi / 2 : .936 * pi / 2;
-        //       });
-        //     })),
-        SizedBox(
-          width: faceSize * 3,
-          height: faceSize * 3,
-          child: Stack(
-            children: [
-              // _trash(faceSize, depth),
-              ..._buildShadowComponents(faceSize, depth),
-              ..._buildBoxComponents(faceSize, depth),
-              _buildWatchComponent(faceSize, depth),
-              _buildTopComponent(faceSize, depth),
-              _buildOverlayComponent(faceSize, depth),
-            ],
-          ),
-        ),
-        Spacer()
-      ],
+    return SizedBox(
+      width: faceSize * 3,
+      height: faceSize * 3,
+      child: Stack(
+        children: [
+          // _trash(faceSize, depth),
+          ..._buildShadowComponents(faceSize, depth),
+          // ..._buildBoxComponents(faceSize, depth),
+          _buildWatchComponent(faceSize, depth),
+          // _buildTopComponent(faceSize, depth),
+          // _buildOverlayComponent(faceSize, depth),
+        ],
+      ),
     );
   }
 
@@ -155,22 +138,12 @@ class _BoxFaceWidgetState extends State<BoxFaceWidget> with TickerProviderStateM
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..scale(1.1),
-                      child: ColorFiltered(
-                        colorFilter: ColorFilter.mode(Color.fromARGB(255, 107, 106, 112), BlendMode.modulate),
-                        child: Image.asset(
-                          "assets/images/pillow.png",
-                          fit: BoxFit.contain,
-                        ),
+                    Hero(
+                      tag: "${widget.watch.name}_image",
+                      child: Image.asset(
+                        widget.watch.assetImage,
+                        fit: BoxFit.contain,
                       ),
-                    ),
-                    Image.asset(
-                      "assets/images/watch.png",
-                      fit: BoxFit.contain,
                     ),
                   ],
                 ),
